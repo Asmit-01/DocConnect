@@ -11,7 +11,8 @@ function Dlogin(props) {
     useEffect(() => {
         const pat = localStorage.getItem('pat')
         const doc = localStorage.getItem('doc')
-        if (pat || doc) {
+        const lab = localStorage.getItem('lab')
+        if (pat || doc || lab) {
             navigate('/')
         }
     })
@@ -20,11 +21,11 @@ function Dlogin(props) {
 
         if (!email || !paswd) {
             alert('Invalid input')
-            navigate('/dlogin')
+            navigate(`/${props.link}`)
             return;
         }
 
-        let result = await fetch("http://localhost:5000/dlogin", {
+        let result = await fetch(`http://localhost:5000/${props.link}`, {
             method: 'post',
             body: JSON.stringify({ email, paswd }),
             headers: {
@@ -35,9 +36,15 @@ function Dlogin(props) {
 
         //console.log(result)
         if (result.name && result.status === "verified") {
-            localStorage.setItem('doc', JSON.stringify(result))
-            props.setloggedin(2)
-            navigate('/dhome')
+            localStorage.setItem(props.set, JSON.stringify(result))
+            if (props.set === 'doc') {
+                props.setloggedin(2)
+                navigate('/dhome')
+            }
+            else {
+                props.setloggedin(3)
+                navigate('/labhome')
+            }
         }
         else if (result.check)
             alert('You are not verified by the admin. Please login after completion of verification');
@@ -47,7 +54,7 @@ function Dlogin(props) {
 
     return (
         <div className='container' style={{ minHeight: "calc(100vh - 277px)" }}>
-            <center style={{ margin: "20px", padding: "10px" }}><h1>Doctor Login</h1></center>
+            <center style={{ margin: "20px", padding: "10px" }}><h1>{props.text}</h1></center>
             <form style={{ margin: "20px", padding: "10px", border: "2px solid grey", borderRadius: "10px" }}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Email</label>
@@ -60,7 +67,7 @@ function Dlogin(props) {
                 <button type="button" onClick={check} className="btn btn-primary">Submit</button>
                 <div style={{ marginTop: '20px' }}>
                     <div>Don't have an account..?</div>
-                    <button className="btn btn-primary"><Link style={{ color: 'white', textDecoration: 'None' }} to="/dregister">Register</Link></button>
+                    <button className="btn btn-primary"><Link style={{ color: 'white', textDecoration: 'None' }} to={props.register}>Register</Link></button>
                 </div>
             </form>
         </div>

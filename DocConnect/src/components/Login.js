@@ -9,9 +9,7 @@ function Login(props) {
                 <div style={{ paddingTop: '10%', display: 'flex', justifyContent: 'space-around', width: '30rem' }}>
                     <button type="button" className="btn btn-primary btn-lg" ><Link style={{ color: 'white', textDecoration: 'none' }} to={props.d}> For Doctors</Link></button>
                     <button type="button" className="btn btn-primary btn-lg"><Link style={{ color: 'white', textDecoration: 'none' }} to={props.p}>For Patients</Link></button>
-
-                    {props.text === 'Register' ? <button type="button" className="btn btn-primary btn-lg"><Link style={{ color: 'white', textDecoration: 'none' }} to={props.l}>For Labs</Link></button> : null}
-
+                    <button type="button" className="btn btn-primary btn-lg"><Link style={{ color: 'white', textDecoration: 'none' }} to={props.l}>For Labs</Link></button>
                 </div>
             </div>
         </div>

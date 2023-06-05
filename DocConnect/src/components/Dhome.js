@@ -6,6 +6,7 @@ function Dhome(props) {
     useEffect(() => {
         const pat = localStorage.getItem('pat')
         const doc = localStorage.getItem('doc')
+
         if (pat || !doc) {
             navigate('/')
         }

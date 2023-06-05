@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Testlist(props) {
     const [res, setRes] = useState([]);
     const [query, setQuery] = useState('')
 
-
+    const navigate = useNavigate();
     useEffect(() => {
+        const pat = localStorage.getItem('pat')
+        const doc = localStorage.getItem('doc')
+        const lab = localStorage.getItem('lab')
+
+        if (!pat || doc || lab)
+            navigate('/')
         async function getData() {
             let resp = await fetch('http://localhost:5000/testlist')
             resp = await resp.json()
@@ -44,6 +50,7 @@ function Testlist(props) {
                     <tr>
                         <th>Test Name</th>
                         <th>Desc</th>
+                        <th>Price</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -54,7 +61,8 @@ function Testlist(props) {
                             <tr key={idx}>
                                 <td>{e.name}</td>
                                 <td>{e.desc}</td>
-                                <td><button className="btn btn-primary" onClick={() => check(e)}><Link style={{ color: 'white', textDecoration: 'none' }} >View Labs</Link></button></td>
+                                <td>{e.price}</td>
+                                <td><button className="btn btn-primary" onClick={() => check(e)}><Link to='/test' style={{ color: 'white', textDecoration: 'none' }} >Book Test</Link></button></td>
                             </tr>
                         )
                     })}

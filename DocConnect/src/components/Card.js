@@ -6,8 +6,8 @@ function Card(props) {
     return (
         <Link onClick={() => {
             if (!p.includes('netmeds')) {
-                props.setFilter(props.filter);
                 if (auth == null) alert('Please login first')
+                props.setFilter(props.filter);
             }
         }} className="card col mx-3 my-1" to={props.link} target={p.includes('netmeds') ? 'blank' : ''} style={{ width: "18rem", textDecoration: 'none', color: 'black' }}>
             <img src={`images/${props.img}`} className="card-img-top" alt="..." />

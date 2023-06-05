@@ -19,6 +19,7 @@ import LabRegister from './components/LabRegister'
 import Testlist from './components/Testlist'
 import Login from './components/Login'
 import Test from './components/Test'
+import Labhome from './components/Labhome'
 
 function App() {
   const [filter, setFilter] = useState('')
@@ -36,9 +37,9 @@ function App() {
           <Route path='/plogin' element={<Plogin setloggedin={setloggedin} />} />
           <Route path='/phome' element={<Phome setFilter={setFilter} />} />
           <Route path='/dregister' element={<Dregister />} />
-          <Route path='/dlogin' element={<Dlogin setloggedin={setloggedin} />} />
+          <Route path='/dlogin' element={<Dlogin setloggedin={setloggedin} text='Doctor Login' link='dlogin' set='doc' register='/dregister' />} />
           <Route path='/dhome' element={<Dhome />} />
-          <Route path='/dsearch' element={<Dsearch filter={filter} setDoc={setDoc} />} />
+          <Route path='/dsearch' element={<Dsearch filter={filter} setDoc={setDoc} link='dsearch' text='Doctors Available' flag='0' />} />
           <Route path='/appointment' element={<Appointment doc={doc} />} />
           <Route path='/pupdate' element={<Pupdate />} />
           <Route path='/dupdate' element={<Dupdate />} />
@@ -47,9 +48,13 @@ function App() {
           <Route path='/help' element={<Help />} />
           <Route path='/labregister' element={<LabRegister />} />
           <Route path='/testlist' element={<Testlist setTest={setTest} />} />
-          <Route path='/test' element={<Test />} />
-          <Route path='/login' element={<Login text='Login' d='/dlogin' p='/plogin' />} />
+          <Route path='/test' element={<Test test={test} />} />
+          <Route path='/lablogin' element={<Dlogin setloggedin={setloggedin} text='Lab Login' link='lablogin' set='lab' register='/labregister' />} />
+          <Route path='/labhome' element={<Labhome />} />
+          <Route path='/login' element={<Login text='Login' d='/dlogin' p='/plogin' l='/lablogin' />} />
           <Route path='/register' element={<Login text='Register' d='/dregister' p='/pregister' l='/labregister' />} />
+          <Route path='/alltests' element={<Dsearch filter='' link='alltests' text='All Test Bookings' flag='0' action='take' />} />
+          <Route path='/selectedtests' element={<Dsearch filter='' link='selectedtests' text='Selected Tests' flag='1' action='done' />} />
         </Routes>
         <Footer loggedin={loggedin} />
       </BrowserRouter>

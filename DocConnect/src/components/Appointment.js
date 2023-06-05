@@ -11,7 +11,8 @@ function Appointment(props) {
     useEffect(() => {
         const pat = localStorage.getItem('pat')
         const doc = localStorage.getItem('doc')
-        if (!pat || doc) {
+        const lab = localStorage.getItem('lab')
+        if (!pat || doc || lab) {
             navigate('/')
         }
     });
@@ -37,7 +38,7 @@ function Appointment(props) {
 
         let result = await fetch("http://127.0.0.1:5000/appointment", {
             method: 'POST',
-            body: JSON.stringify({ demail, pemail, day, tim }),
+            body: JSON.stringify({ demail, pemail, day, tim, dname, pname }),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -51,6 +52,10 @@ function Appointment(props) {
         else if (result.error) {
             alert('Appointment already booked')
             navigate('/dsearch')
+        }
+        else if (result.limit) {
+            alert('Slot is not available, Please select some other slot or change the date')
+            navigate('/appointment')
         }
     }
 

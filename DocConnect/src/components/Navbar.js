@@ -5,14 +5,17 @@ function Navbar(props) {
 
     const [pat, setPat] = useState(false)
     const [doc, setDoc] = useState(false)
+    const [lab, setLab] = useState(false)
     const p = JSON.parse(localStorage.getItem('pat'))
     const d = JSON.parse(localStorage.getItem('doc'))
+    const l = JSON.parse(localStorage.getItem('lab'))
 
     useEffect(() => {
 
         // console.log(props.loggedin)
         if (p != null) setPat(true);
         if (d != null) setDoc(true);
+        if (l != null) setLab(true);
     }, [props])
 
     return (
@@ -25,7 +28,7 @@ function Navbar(props) {
                 <div className="collapse navbar-collapse container-fluid" id="navbarNav" style={{ justifyContent: 'space-between' }}>
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            {(doc || pat) ? <></> : <Link className="nav-link active" aria-current="page" to="/">Home</Link>}
+                            {(doc || pat || lab) ? <></> : <Link className="nav-link active" aria-current="page" to="/">Home</Link>}
                         </li>
                         <li className="nav-item">
                             {(pat) ? <Link className="nav-link" to="/phome">Home</Link> : <></>}
@@ -66,19 +69,41 @@ function Navbar(props) {
                                 localStorage.clear();
                             }}>Logout</Link> : <></>}
                         </li>
+
+
+                        <li className="nav-item">
+                            {(lab) ? <Link className="nav-link" to="/labhome">Home</Link> : <></>}
+                        </li>
+                        <li className="nav-item">
+                            {(lab) ? <Link className="nav-link" to="/alltests">All Test Bookings</Link> : <></>}
+                        </li>
+                        <li className="nav-item">
+                            {(lab) ? <Link className="nav-link" to="/selectedtests">Selected Tests</Link> : <></>}
+                        </li>
+                        <li className="nav-item">
+                            {(lab) ? <Link className="nav-link" to="/" onClick={() => {
+                                setLab(false)
+                                props.setloggedin(0)
+                                localStorage.clear();
+                            }}>Logout</Link> : <></>}
+                        </li>
+
                     </ul>
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            {(doc || pat) ? <></> : <Link className="nav-link active" aria-current="page" to="/login">Login</Link>}
+                            {(doc || pat || lab) ? <></> : <Link className="nav-link active" aria-current="page" to="/login">Login</Link>}
                         </li>
                         <li className="nav-item">
-                            {(doc || pat) ? <></> : <Link className="nav-link active" aria-current="page" to="/Register">Register</Link>}
+                            {(doc || pat || lab) ? <></> : <Link className="nav-link active" aria-current="page" to="/Register">Register</Link>}
                         </li>
                         <li className="nav-item">
                             {(doc) ? <span style={{ color: 'white' }}>{'Welcome, Dr. ' + d.name}</span> : <></>}
                         </li>
                         <li className="nav-item">
                             {(pat) ? <span style={{ color: 'white' }}>{'Welcome, ' + p.name}</span> : <></>}
+                        </li>
+                        <li className="nav-item">
+                            {(lab) ? <span style={{ color: 'white' }}>{'Welcome, ' + l.name}</span> : <></>}
                         </li>
                     </ul>
                 </div>

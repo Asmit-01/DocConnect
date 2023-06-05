@@ -20,7 +20,7 @@ app.use(express.urlencoded({
     extended: false
 }));
 app.use("/uploads", express.static("./public/uploads"));
-const { patient, doctor, appointment, lab, test } = require('./db')
+const { patient, doctor, appointment, lab, test, testbooked } = require('./db')
 
 
 const storage = multer.diskStorage({
@@ -159,34 +159,41 @@ app.post('/appointment', async (req, resp) => {
     if (temp) {
         return resp.json({ error: 'appointment already booked' })
     }
+    let t = await appointment.find({ dEmail: req.body.demail, date: req.body.day, time: req.body.tim });
+    if (t.length === 3) {
+        return resp.json({ limit: 'limit' })
+    }
     const obj = new appointment({ dEmail: req.body.demail, pEmail: req.body.pemail, date: req.body.day, time: req.body.tim, status: 'active' });
 
     await obj.save();
 
 
-    // var transporter = nodemailer.createTransport({
-    //     service: 'gmail',
-    //     auth: {
-    //         user: 'youremail@gmail.com',
-    //         pass: 'yourpassword'
-    //     }
-    // });
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'noreply.docconnect@gmail.com',
+            pass: 'viethydffnbeyvhk'
+        }
+    });
 
-    // var mailOptions = {
-    //     from: 'youremail@gmail.com',
-    //     to: 'myfriend@yahoo.com',
-    //     subject: 'Sending Email using Node.js',
-    //     text: 'That was easy!'
-    // };
+    var mailOptions = {
+        from: 'noreply.docconnect@gmail.com',
+        to: req.body.pemail,
+        subject: 'Appointment Details',
+        text: `Hi ${req.body.pname},
+Your appointment with Dr.${req.body.dname} is scheduled for ${req.body.day} at timeslot ${req.body.tim}.
+        
+Regards
+Team DocConnect`
+    };
 
-    // transporter.sendMail(mailOptions, function (error, info) {
-    //     if (error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log('Email sent: ' + info.response);
-    //     }
-    // });
-
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent successfully');
+        }
+    });
 
     resp.send({ result: 'hello world' })
 })
@@ -292,7 +299,35 @@ app.post('/cancelappointment', async (req, resp) => {
     const x = req.body.pEmail;
     const y = req.body.dEmail;
     const z = req.body.date;
-    await appointment.updateOne({ pEmail: x, dEmail: y, date: z }, { $set: { status: 'cancelled' } })
+    await appointment.updateOne({ pEmail: x, dEmail: y, date: z }, { $set: { status: 'cancelled' } });
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'noreply.docconnect@gmail.com',
+            pass: 'viethydffnbeyvhk'
+        }
+    });
+
+    var mailOptions = {
+        from: 'noreply.docconnect@gmail.com',
+        to: req.body.pEmail,
+        subject: 'Appointment Cancelled',
+        text: `Hi ${req.body.pName},
+Your appointment with Dr.${req.body.dName} for ${req.body.date} at timeslot ${req.body.time} is cancelled.
+        
+Regards
+Team DocConnect`
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent successfully');
+        }
+    });
+
     resp.send({ result: 'result' })
 })
 
@@ -305,10 +340,12 @@ app.get('/help', (req, resp) => {
 
 /************************************** labregister ****************************************/
 app.post('/labregister', upload.array('file', 1), async (req, resp, next) => {
+    //console.log(req.body);
     if (!req.body.name || !req.body.phone || !req.body.email || !req.body.address || !req.files || !req.body.city || !req.body.paswd) {
         return resp.send({ result: 'invalid input' })
     }
 
+    req.body.paswd = await bcrypt.hash(req.body.paswd, 10);
     const license = req.files[0].filename;
     let temp = await lab.findOne({ name: req.body.name, email: req.body.email });
     if (temp) {
@@ -329,6 +366,70 @@ app.get('/testlist', async (req, resp) => {
     resp.json(res)
 })
 
-/**************************************  ****************************************/
+/************************************** test ********************************************/
+app.post('/test', async (req, resp) => {
+    const temp = await testbooked.findOne({ pEmail: req.body.pEmail, testName: req.body.testName, date: req.body.day });
+    if (temp) {
+        return resp.json({ duplicate: 'duplicate' })
+    }
 
+    let x = { pEmail: req.body.pEmail, testName: req.body.testName, date: req.body.day, pname: req.body.pName, address: req.body.padd, status: 'active', lab: 'nil' };
+    const obj = new testbooked(x);
+    await obj.save();
+    return resp.json({ success: 'success' })
+})
+
+
+/*************************************lablogin************************************/
+app.post('/lablogin', async (req, resp) => {
+    if (!req.body.email || !req.body.paswd) {
+        return resp.send({ result: 'invalid input' })
+    }
+
+    let temp = await lab.findOne({ email: req.body.email });
+    if (!temp) {
+        return resp.send({ result: 'Invalid Credentials' })
+    }
+
+    let f = await bcrypt.compare(req.body.paswd, temp.paswd);
+    if (!f) {
+        return resp.send({ result: 'Invalid Credentials' })
+    }
+
+    if (temp.status != "verified") {
+        return resp.send({ check: "You are not verified by the admin" })
+    }
+
+    resp.send(temp)
+})
+
+/*************************************** all tests ****************************/
+app.get('/alltests', async (req, resp) => {
+    const t = await testbooked.find({ lab: 'nil' });
+    return resp.json(t);
+})
+
+
+/*************************************** take ********************************/
+app.post('/take', async (req, resp) => {
+    var newvalues = { $set: { lab: req.body.lem } };
+    await testbooked.updateOne({ pEmail: req.body.pEmail, testName: req.body.testName, date: req.body.date }, newvalues);
+    return resp.json({ success: 'success' })
+})
+
+
+/******************************************* selected tests ************************/
+app.post('/selectedtests', async (req, resp) => {
+    const temp = await testbooked.find({ lab: req.body.lem });
+    return resp.json(temp);
+})
+
+/********************************************* mark as done ******************************/
+app.post('/done', async (req, resp) => {
+    var newvalues = { $set: { status: 'done' } };
+    await testbooked.updateOne({ pEmail: req.body.pEmail, testName: req.body.testName, date: req.body.date }, newvalues);
+    return resp.json({ success: 'success' })
+})
+
+/*****************************************************************************/
 app.listen(5000, () => { console.log("server Listen at 5000") });
