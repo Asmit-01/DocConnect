@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 
-function Dupdate() {
+function Dupdate(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [paswd, setPasswd] = useState("");
@@ -26,7 +26,7 @@ function Dupdate() {
         const auth = await JSON.parse(localStorage.getItem('doc'));
         const cuEmail = auth.email;
 
-        let result = await fetch(`http://127.0.0.1:5000/dupdate`, {
+        let result = await fetch(props.deploy + `dupdate`, {
             method: 'POST',
             body: JSON.stringify({ cuEmail, name, phone, email, address, paswd, exp, city, specialization }),
             headers: {

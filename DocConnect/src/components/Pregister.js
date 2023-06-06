@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function Pregister() {
+function Pregister(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [paswd, setPasswd] = useState("");
@@ -27,7 +27,7 @@ function Pregister() {
             navigate('/pregister')
             return;
         }
-        let result = await fetch("http://127.0.0.1:5000/pregister", {
+        let result = await fetch(props.deploy + "pregister", {
             method: 'POST',
             body: JSON.stringify({ name, phone, paswd, gender, address, age, email }),
             headers: {

@@ -14,7 +14,7 @@ function Testlist(props) {
         if (!pat || doc || lab)
             navigate('/')
         async function getData() {
-            let resp = await fetch('http://localhost:5000/testlist')
+            let resp = await fetch(props.deploy + 'testlist')
             resp = await resp.json()
             setRes(resp);
         }

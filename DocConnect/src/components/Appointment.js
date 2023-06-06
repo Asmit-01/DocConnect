@@ -36,7 +36,7 @@ function Appointment(props) {
             return;
         }
 
-        let result = await fetch("http://127.0.0.1:5000/appointment", {
+        let result = await fetch(props.deploy + 'appointment', {
             method: 'POST',
             body: JSON.stringify({ demail, pemail, day, tim, dname, pname }),
             headers: {

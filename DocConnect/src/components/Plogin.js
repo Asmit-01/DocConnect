@@ -24,7 +24,7 @@ function Plogin(props) {
             return;
         }
 
-        let result = await fetch("http://localhost:5000/plogin", {
+        let result = await fetch(props.deploy + "plogin", {
             method: 'post',
             body: JSON.stringify({ email, paswd }),
             headers: {

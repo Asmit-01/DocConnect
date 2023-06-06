@@ -25,7 +25,7 @@ function Dlogin(props) {
             return;
         }
 
-        let result = await fetch(`http://localhost:5000/${props.link}`, {
+        let result = await fetch(props.deploy + `${props.link}`, {
             method: 'post',
             body: JSON.stringify({ email, paswd }),
             headers: {

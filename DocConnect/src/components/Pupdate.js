@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function Pupdate() {
+function Pupdate(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [paswd, setPasswd] = useState("");
@@ -24,7 +24,7 @@ function Pupdate() {
         let temp = JSON.parse(localStorage.getItem('pat'));
         const cuemail = temp.email;
 
-        let result = await fetch(`http://127.0.0.1:5000/pupdate`, {
+        let result = await fetch(props.deploy + `pupdate`, {
             method: 'POST',
             body: JSON.stringify({ cuemail, name, phone, paswd, gender, address, age, email }),
             headers: {

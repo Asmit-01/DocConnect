@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 
-function DappointList() {
+function DappointList(props) {
     const [res, setRes] = useState([]);
     const navigate = useNavigate();
     const [query, setQuery] = useState('')
@@ -23,7 +23,7 @@ function DappointList() {
             let dem = d.email;
 
             async function getData() {
-                let resp = await fetch('http://127.0.0.1:5000/dappointlist', {
+                let resp = await fetch(props.deploy + 'dappointlist', {
                     method: 'POST',
                     body: JSON.stringify({ dem }),
                     headers: {
@@ -39,7 +39,7 @@ function DappointList() {
         else if (pat) {
             let pemail = p.email;
             async function getData() {
-                let resp = await fetch('http://127.0.0.1:5000/pappointlist', {
+                let resp = await fetch(props.deploy + 'pappointlist', {
                     method: 'POST',
                     body: JSON.stringify({ pemail }),
                     headers: {
@@ -67,7 +67,7 @@ function DappointList() {
 
     const check = async (item) => {
         if (window.confirm("This action cannot be reversed..Are you sure?")) {
-            let x = await fetch('http://127.0.0.1:5000/cancelappointment', {
+            let x = await fetch(props.deploy + 'cancelappointment', {
                 method: 'POST',
                 body: JSON.stringify(item),
                 headers: {

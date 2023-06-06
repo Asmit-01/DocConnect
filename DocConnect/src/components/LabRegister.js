@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Axios from 'axios'
 
-function LabRegister() {
+function LabRegister(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ function LabRegister() {
 
     useEffect(() => {
         async function getData() {
-            let resp = await fetch('http://localhost:5000/testlist')
+            let resp = await fetch(props.deploy + 'testlist')
             resp = await resp.json()
             setdata(resp);
         }
@@ -45,7 +45,7 @@ function LabRegister() {
             return;
         }
 
-        Axios.post("http://localhost:5000/labregister", formData).then((result) => {
+        Axios.post(props.deploy + "labregister", formData).then((result) => {
             if (result.data.name) {
                 alert('Registered successfully')
                 console.log("ok");

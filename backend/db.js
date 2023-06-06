@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
+const dotenv = require('dotenv')
+dotenv.config()
 
-mongoose.connect("mongodb+srv://asmitkrpanika01:Sahil%40123@docconnect.9xndz2u.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     console.log("database connected")
 }).catch((err) => {
     console.log(err)

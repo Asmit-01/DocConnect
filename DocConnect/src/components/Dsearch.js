@@ -25,7 +25,7 @@ function Dsearch(props) {
                     l = JSON.parse(l);
                     const lem = l.email;
 
-                    let resp = await fetch(`http://localhost:5000/${props.link}`, {
+                    let resp = await fetch(props.deploy + `${props.link}`, {
                         method: 'post',
                         body: JSON.stringify({ lem: lem }),
                         headers: {
@@ -40,7 +40,7 @@ function Dsearch(props) {
             }
             else {
                 async function getData() {
-                    let resp = await fetch(`http://localhost:5000/${props.link}`)
+                    let resp = await fetch(props.deploy + `${props.link}`)
                     resp = await resp.json()
                     setRes(resp);
                     setQuery(props.filter);
@@ -71,7 +71,7 @@ function Dsearch(props) {
         l = JSON.parse(l);
         const lem = l.email;
 
-        let result = await fetch(`http://localhost:5000/${props.action}`, {
+        let result = await fetch(props.deploy + `${props.action}`, {
             method: 'post',
             body: JSON.stringify({ ...item, lem: lem }),
             headers: {

@@ -27,34 +27,36 @@ function App() {
   const [loggedin, setloggedin] = useState(0)
   const [test, setTest] = useState('')
 
+  const deploy = 'https://docconnect-backend.onrender.com/';
+
   return (
     <div>
       <BrowserRouter>
-        <Navbar loggedin={loggedin} setloggedin={setloggedin} />
+        <Navbar loggedin={loggedin} setloggedin={setloggedin} deploy={deploy} />
         <Routes>
-          <Route path='/' element={<Home setFilter={setFilter} />} />
-          <Route path='/pregister' element={<Pregister />} />
-          <Route path='/plogin' element={<Plogin setloggedin={setloggedin} />} />
-          <Route path='/phome' element={<Phome setFilter={setFilter} />} />
-          <Route path='/dregister' element={<Dregister />} />
-          <Route path='/dlogin' element={<Dlogin setloggedin={setloggedin} text='Doctor Login' link='dlogin' set='doc' register='/dregister' />} />
-          <Route path='/dhome' element={<Dhome />} />
-          <Route path='/dsearch' element={<Dsearch filter={filter} setDoc={setDoc} link='dsearch' text='Doctors Available' flag='0' />} />
-          <Route path='/appointment' element={<Appointment doc={doc} />} />
-          <Route path='/pupdate' element={<Pupdate />} />
-          <Route path='/dupdate' element={<Dupdate />} />
-          <Route path='/dappointlist' element={<DappointList />} />
-          <Route path='/pappointlist' element={<DappointList />} />
-          <Route path='/help' element={<Help />} />
-          <Route path='/labregister' element={<LabRegister />} />
-          <Route path='/testlist' element={<Testlist setTest={setTest} />} />
-          <Route path='/test' element={<Test test={test} />} />
-          <Route path='/lablogin' element={<Dlogin setloggedin={setloggedin} text='Lab Login' link='lablogin' set='lab' register='/labregister' />} />
-          <Route path='/labhome' element={<Labhome />} />
-          <Route path='/login' element={<Login text='Login' d='/dlogin' p='/plogin' l='/lablogin' />} />
-          <Route path='/register' element={<Login text='Register' d='/dregister' p='/pregister' l='/labregister' />} />
-          <Route path='/alltests' element={<Dsearch filter='' link='alltests' text='All Test Bookings' flag='0' action='take' />} />
-          <Route path='/selectedtests' element={<Dsearch filter='' link='selectedtests' text='Selected Tests' flag='1' action='done' />} />
+          <Route path='/' element={<Home setFilter={setFilter} deploy={deploy} />} />
+          <Route path='/pregister' element={<Pregister deploy={deploy} />} />
+          <Route path='/plogin' element={<Plogin setloggedin={setloggedin} deploy={deploy} />} />
+          <Route path='/phome' element={<Phome setFilter={setFilter} deploy={deploy} />} />
+          <Route path='/dregister' element={<Dregister deploy={deploy} />} />
+          <Route path='/dlogin' element={<Dlogin setloggedin={setloggedin} text='Doctor Login' link='dlogin' set='doc' register='/dregister' deploy={deploy} />} />
+          <Route path='/dhome' element={<Dhome deploy={deploy} />} />
+          <Route path='/dsearch' element={<Dsearch filter={filter} setDoc={setDoc} link='dsearch' text='Doctors Available' flag='0' deploy={deploy} />} />
+          <Route path='/appointment' element={<Appointment doc={doc} deploy={deploy} />} />
+          <Route path='/pupdate' element={<Pupdate deploy={deploy} />} />
+          <Route path='/dupdate' element={<Dupdate deploy={deploy} />} />
+          <Route path='/dappointlist' element={<DappointList deploy={deploy} />} />
+          <Route path='/pappointlist' element={<DappointList deploy={deploy} />} />
+          <Route path='/help' element={<Help deploy={deploy} />} />
+          <Route path='/labregister' element={<LabRegister deploy={deploy} />} />
+          <Route path='/testlist' element={<Testlist setTest={setTest} deploy={deploy} />} />
+          <Route path='/test' element={<Test test={test} deploy={deploy} />} />
+          <Route path='/lablogin' element={<Dlogin setloggedin={setloggedin} text='Lab Login' link='lablogin' set='lab' register='/labregister' deploy={deploy} />} />
+          <Route path='/labhome' element={<Labhome deploy={deploy} />} />
+          <Route path='/login' element={<Login text='Login' d='/dlogin' p='/plogin' l='/lablogin' deploy={deploy} />} />
+          <Route path='/register' element={<Login text='Register' d='/dregister' p='/pregister' l='/labregister' deploy={deploy} />} />
+          <Route path='/alltests' element={<Dsearch filter='' link='alltests' text='All Test Bookings' flag='0' action='take' deploy={deploy} />} />
+          <Route path='/selectedtests' element={<Dsearch filter='' link='selectedtests' text='Selected Tests' flag='1' action='done' deploy={deploy} />} />
         </Routes>
         <Footer loggedin={loggedin} />
       </BrowserRouter>

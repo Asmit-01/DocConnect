@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Axios from 'axios'
 
-function Dregister() {
+function Dregister(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [paswd, setPasswd] = useState("");
@@ -40,7 +40,7 @@ function Dregister() {
             return;
         }
 
-        Axios.post("http://localhost:5000/dregister", formData).then((result) => {
+        Axios.post(props.deploy + "dregister", formData).then((result) => {
             if (result.data.name) {
                 alert('Registered successfully')
                 console.log("ok");
