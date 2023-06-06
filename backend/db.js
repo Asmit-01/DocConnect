@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-mongoose.connect("mongodb://127.0.0.1:27017/docConnect", { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
-    console.log("connected")
+mongoose.connect("mongodb+srv://asmitkrpanika01:Sahil%40123@docconnect.9xndz2u.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+    console.log("database connected")
 }).catch((err) => {
     console.log(err)
 })

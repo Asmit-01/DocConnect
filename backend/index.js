@@ -5,6 +5,8 @@ const app = express();
 const cors = require('cors')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
+const dotenv = require('dotenv')
+dotenv.config()
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -171,13 +173,13 @@ app.post('/appointment', async (req, resp) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'noreply.docconnect@gmail.com',
-            pass: 'viethydffnbeyvhk'
+            user: process.env.EMAIL,
+            pass: process.env.PWD
         }
     });
 
     var mailOptions = {
-        from: 'noreply.docconnect@gmail.com',
+        from: process.env.EMAIL,
         to: req.body.pemail,
         subject: 'Appointment Details',
         text: `Hi ${req.body.pname},
@@ -304,13 +306,13 @@ app.post('/cancelappointment', async (req, resp) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'noreply.docconnect@gmail.com',
-            pass: 'viethydffnbeyvhk'
+            user: process.env.EMAIL,
+            pass: process.env.PWD
         }
     });
 
     var mailOptions = {
-        from: 'noreply.docconnect@gmail.com',
+        from: process.env.EMAIL,
         to: req.body.pEmail,
         subject: 'Appointment Cancelled',
         text: `Hi ${req.body.pName},
@@ -376,9 +378,41 @@ app.post('/test', async (req, resp) => {
     let x = { pEmail: req.body.pEmail, testName: req.body.testName, date: req.body.day, pname: req.body.pName, address: req.body.padd, status: 'active', lab: 'nil' };
     const obj = new testbooked(x);
     await obj.save();
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PWD
+        }
+    });
+
+
+    let t = Math.floor(Math.random() * 10000);
+
+    var mailOptions = {
+        from: process.env.EMAIL,
+        to: req.body.pEmail,
+        subject: 'Diagnostics Test Booking Details',
+        text: `Hi ${req.body.pName},
+Your booking for test name ${req.body.testName} is confirmed for ${req.body.day}. Our specialist will shortly contact you.
+Your secret code is ${t}.
+        
+Regards
+Team DocConnect`
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent successfully');
+        }
+    });
+
+
     return resp.json({ success: 'success' })
 })
-
 
 /*************************************lablogin************************************/
 app.post('/lablogin', async (req, resp) => {
@@ -432,4 +466,5 @@ app.post('/done', async (req, resp) => {
 })
 
 /*****************************************************************************/
-app.listen(5000, () => { console.log("server Listen at 5000") });
+const port = process.env.PORT || 5000;
+app.listen(port, () => { console.log(`server Listen at ${port}`) });
