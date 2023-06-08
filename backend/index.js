@@ -5,9 +5,39 @@ const app = express();
 const cors = require('cors')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
+const { google } = require('googleapis')
 const dotenv = require('dotenv')
 dotenv.config()
 
+
+const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
+oauth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+
+async function sendMail(mailOptions) {
+    try {
+        const accesstoken = await oauth2Client.getAccessToken();
+
+        const transport = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: 'noreply.docconnect@gmail.com',
+                clientId: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
+                refreshToken: process.env.REFRESH_TOKEN,
+                accessToken: accesstoken
+            }
+        })
+
+        const result = await transport.sendMail(mailOptions);
+        return result;
+    }
+    catch (error) {
+        return error;
+    }
+}
+
+app.use(cors())
 app.use(express.json());
 app.use(bodyParser.json());
 app.use("/", (req, res, next) => {
@@ -36,9 +66,6 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
-
-app.use(cors())
-app.use(express.json());
 
 
 
@@ -170,16 +197,8 @@ app.post('/appointment', async (req, resp) => {
     await obj.save();
 
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PWD
-        }
-    });
-
     var mailOptions = {
-        from: process.env.EMAIL,
+        from: 'noreply.docconnect@gmail.com',
         to: req.body.pemail,
         subject: 'Appointment Details',
         text: `Hi ${req.body.pname},
@@ -189,13 +208,7 @@ Regards
 Team DocConnect`
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent successfully');
-        }
-    });
+    sendMail(mailOptions).then((res) => { console.log("email sent...") }).catch((err) => { console.log(err) })
 
     resp.send({ result: 'hello world' })
 })
@@ -303,16 +316,8 @@ app.post('/cancelappointment', async (req, resp) => {
     const z = req.body.date;
     await appointment.updateOne({ pEmail: x, dEmail: y, date: z }, { $set: { status: 'cancelled' } });
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PWD
-        }
-    });
-
     var mailOptions = {
-        from: process.env.EMAIL,
+        from: 'noreply.docconnect@gmail.com',
         to: req.body.pEmail,
         subject: 'Appointment Cancelled',
         text: `Hi ${req.body.pName},
@@ -322,13 +327,7 @@ Regards
 Team DocConnect`
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent successfully');
-        }
-    });
+    sendMail(mailOptions).then((res) => { console.log("email sent...") }).catch((err) => { console.log(err) })
 
     resp.send({ result: 'result' })
 })
@@ -379,19 +378,11 @@ app.post('/test', async (req, resp) => {
     const obj = new testbooked(x);
     await obj.save();
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PWD
-        }
-    });
-
 
     let t = Math.floor(Math.random() * 10000);
 
     var mailOptions = {
-        from: process.env.EMAIL,
+        from: 'noreply.docconnect@gmail.com',
         to: req.body.pEmail,
         subject: 'Diagnostics Test Booking Details',
         text: `Hi ${req.body.pName},
@@ -402,14 +393,7 @@ Regards
 Team DocConnect`
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent successfully');
-        }
-    });
-
+    sendMail(mailOptions).then((res) => { console.log("email sent...") }).catch((err) => { console.log(err) })
 
     return resp.json({ success: 'success' })
 })
