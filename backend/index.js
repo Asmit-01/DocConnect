@@ -41,14 +41,14 @@ async function sendMail(mailOptions) {
 app.use(cors())
 app.use(express.json());
 app.use(bodyParser.json());
-// app.use("/", (req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header(
-//         "Access-Control-Allow-Headers",
-//         "Origin, X-Requested-With, Content-Type, Accept"
-//     );
-//     next();
-// });
+app.use("/", (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+});
 app.use(express.urlencoded({
     extended: false
 }));
@@ -58,7 +58,7 @@ const { patient, doctor, appointment, lab, test, testbooked } = require('./db')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/uploads')
+        cb(null, 'backend/public/uploads')
     },
     filename: function (req, file, cb) {
         const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -126,6 +126,8 @@ app.post(api + '/dregister', upload.array('file', 1), async (req, resp, next) =>
     if (!req.body.name || !req.body.phone || !req.body.paswd || !req.body.email || !req.body.address || !req.body.exp || !req.body.specialization || !req.files) {
         return resp.send({ result: 'invalid input' })
     }
+
+    //console.log(req.body);
 
     const license = req.files[0].filename;
     let temp = await doctor.findOne({ name: req.body.name, email: req.body.email });
