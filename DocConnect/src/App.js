@@ -27,8 +27,8 @@ function App() {
   const [loggedin, setloggedin] = useState(0)
   const [test, setTest] = useState('')
 
-  //const deploy = 'https://docconnect-backend.onrender.com/';
-  const deploy = 'http://127.0.0.1:4000/api/v1/'
+  const deploy = 'https://docconnect-7ze4.onrender.com'
+  //const deploy = 'http://127.0.0.1:4000/api/v1/'
 
   return (
     <div>
